@@ -13,7 +13,7 @@ import numpy as np
 import os
 
 if __name__ == '__main__':
-    title = "Insert title here"
+    title = "Enter Name here"
     
     mp_drawing = mp.solutions.drawing_utils
     mp_holistic = mp.solutions.holistic
@@ -79,27 +79,27 @@ if __name__ == '__main__':
 
             # export coordinates
             # put this in its own file
-            # try:
-            #     # Extract Pose landmarks
-            #     pose = results.pose_landmarks.landmark
-            #     pose_row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
+            try:
+                # Extract Pose landmarks
+                pose = results.pose_landmarks.landmark
+                pose_row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
                 
-            #     # Extract Face landmarks
-            #     face = results.face_landmarks.landmark
-            #     face_row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in face]).flatten())
+                # Extract Face landmarks
+                face = results.face_landmarks.landmark
+                face_row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in face]).flatten())
                 
-            #     # Concatenate rows
-            #     row = pose_row+face_row
+                # Concatenate rows
+                row = pose_row+face_row
                 
-            #     # Append class name 
-            #     row.insert(0, title)
+                # Append class name 
+                row.insert(0, title)
                 
-            #     # Export to CSV
-            #     with open('coords.csv', mode='a', newline='') as f:
-            #         csv_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            #         csv_writer.writerow(row) 
-            # except:
-            #     pass
+                # Export to CSV
+                with open('coords.csv', mode='a', newline='') as f:
+                    csv_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                    csv_writer.writerow(row) 
+            except:
+                pass
 
     cap.release()
     # cap.destroyAllWindows()
