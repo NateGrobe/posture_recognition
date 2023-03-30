@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
             image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-            # results = holistic.process(image)
+            results = holistic.process(image)
 
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
@@ -44,17 +44,17 @@ if __name__ == '__main__':
             #                         mp_drawing.DrawingSpec(color=(80,256,121), thickness=1, circle_radius=1)
             #                         )
             
-            # 2. Right hand
-            mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS, 
-                                    mp_drawing.DrawingSpec(color=(80,22,10), thickness=2, circle_radius=4),
-                                    mp_drawing.DrawingSpec(color=(80,44,121), thickness=2, circle_radius=2)
-                                    )
+            # # 2. Right hand
+            # mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS, 
+            #                         mp_drawing.DrawingSpec(color=(80,22,10), thickness=2, circle_radius=4),
+            #                         mp_drawing.DrawingSpec(color=(80,44,121), thickness=2, circle_radius=2)
+            #                         )
 
-            # 3. Left Hand
-            mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS, 
-                                    mp_drawing.DrawingSpec(color=(121,22,76), thickness=2, circle_radius=4),
-                                    mp_drawing.DrawingSpec(color=(121,44,250), thickness=2, circle_radius=2)
-                                    )
+            # # 3. Left Hand
+            # mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS, 
+            #                         mp_drawing.DrawingSpec(color=(121,22,76), thickness=2, circle_radius=4),
+            #                         mp_drawing.DrawingSpec(color=(121,44,250), thickness=2, circle_radius=2)
+            #                         )
 
             # 4. Pose Detections
             mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS, 
@@ -102,8 +102,9 @@ if __name__ == '__main__':
             #     pass
 
     cap.release()
-    cap.destroyAllWindows()
+    # cap.destroyAllWindows()
 
 
-    num_coords = len(results.pose_landmarks.landmark) + len(results.face_landmarks.landmark)
+    num_coords = len(results.pose_landmarks.landmark) 
+    # + len(results.face_landmarks.landmark)
 
