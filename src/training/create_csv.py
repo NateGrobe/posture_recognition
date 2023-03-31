@@ -12,56 +12,73 @@ import csv
 import numpy as np
 import os
 
-if __name__ == '__main__':
-    title = ""
-    
-    mp_drawing = mp.solutions.drawing_utils
+def get_folder(img_class: str) -> str:
+    if img_class == 'average':
+        return 'Average'
+    elif img_class == 'bendingdown':
+        return 'BendingDown'
+
+def create_csv():
     mp_holistic = mp.solutions.holistic
 
-    # cap = cv2.VideoCapture(0)
-    # get the path/directory
-    folder_dir = "./Average"
-    for images in os.listdir(folder_dir):
- 
-        
-        results = None
-        with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
+    output_file = './models/coords_test.csv'
+    avg_dir = "./Average"
+    bd_dir = "./BendingDown"
+    results = None
+    first_loop = True
 
-            image = cv2.cvtColor(images, cv2.COLOR_BGR2RGB)
-            
+    s_count = 0
+    f_count = 0
 
+    # make sure there are only jpegs being read in
+    avg_imgs = [x for x in os.listdir(avg_dir) if ".jpg" in x]
+    bd_imgs = [x for x in os.listdir(bd_dir) if ".jpg" in x]
+    img_list = avg_imgs + bd_imgs
 
-            results = holistic.process(images)
+    with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
+        for image_path in img_list:
 
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR) 
+            img_class = image_path.split('_')[0].lower()
+            image = cv2.imread(f"./{get_folder(img_class)}/{image_path}")
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-            mp_drawing.draw_landmarks(images, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS, 
-                                    mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=4),
-                                    mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2)
-                                    )
+            results = holistic.process(image)
 
-            # export coordinates
-            # put this in its own file
+            if first_loop:
+                num_coords = len(results.pose_landmarks.landmark)
+                landmarks = ['class']
+                for i in range(1, num_coords + 1):
+                    landmarks += [f"x{i}", f"y{i}", f"z{i}", f"v{i}"]
+
+                with open(output_file, mode='w', newline='') as f:
+                    csv_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                    csv_writer.writerow(landmarks)
+
+                first_loop = False
+
             try:
                 # Extract Pose landmarks
                 pose = results.pose_landmarks.landmark
                 pose_row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
                 
-                # Extract Face landmarks
-                face = results.face_landmarks.landmark
-                face_row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in face]).flatten())
-                
                 # Concatenate rows
-                row = pose_row+face_row
+                row = pose_row
                 
                 # Append class name 
-                row.insert(0, title)
+                row.insert(0, img_class)
                 
                 # Export to CSV
-                with open('coords.csv', mode='a', newline='') as f:
+                with open(output_file, mode='a', newline='') as f:
                     csv_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                     csv_writer.writerow(row) 
+
+                s_count += 1
             except:
-                pass
+                f_count += 1
+        
 
+    print(f"{s_count} success")
+    print(f"{f_count} failed")
 
+if __name__ == '__main__':
+    create_csv()

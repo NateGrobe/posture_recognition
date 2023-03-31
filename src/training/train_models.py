@@ -5,6 +5,7 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import pickle
+from create_csv import create_csv
 
 
 # potential models to be trained and evaluated
@@ -31,8 +32,10 @@ def write_model(model, type):
 
 
 if __name__ == '__main__':
+    create_csv()
+
     # read in data
-    df = pd.read_csv('./models/coords.csv')
+    df = pd.read_csv('./models/coords_test.csv')
 
     X = df.drop('class', axis=1) # features
     y = df['class'] # target value
