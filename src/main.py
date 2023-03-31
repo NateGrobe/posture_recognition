@@ -58,9 +58,9 @@ class App(customtkinter.CTk):
         self.mp_drawing = mp.solutions.drawing_utils  # drawing helpers
         self.mp_holistic = mp.solutions.holistic  # Mediapipe Solutions
 
-        self.blf = open("models/body_language.pkl", "rb")
+        self.blf = open(r"training\models\rf.pkl", "rb")
         self.pose_model = None
-        with open("models/body_language.pkl", "rb") as f:
+        with open(r"training\models\rf.pkl", "rb") as f:
             self.pose_model = pickle.load(f)
         self.holistic = self.mp_holistic.Holistic(
             min_detection_confidence=0.5, min_tracking_confidence=0.5)
