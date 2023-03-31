@@ -35,10 +35,12 @@ class App(customtkinter.CTk):
         self.radio_var = tkinter.IntVar()
         self.radiobutton_1 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Ridge",
                                                           command=self.change_model, variable=self.radio_var, value=1)
-        self.radiobutton_1.grid(row=2, column=0, padx=20, pady=10)
+        self.radiobutton_1.grid(
+            row=2, column=0, padx=20, pady=10, sticky="nsew")
         self.radiobutton_2 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Random Forest",
                                                           command=self.change_model, variable=self.radio_var, value=2)
-        self.radiobutton_2.grid(row=3, column=0, padx=20, pady=10)
+        self.radiobutton_2.grid(
+            row=3, column=0, padx=20, pady=10, sticky="nsew")
         # self.radiobutton_3 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Ridge",
         #                                                   command=self.change_model, variable=self.radio_var, value=3)
         # self.radiobutton_4 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Random Tree",
