@@ -27,7 +27,7 @@ def generate_models(X_train, y_train) -> dict:
     return models
 
 def write_model(model, type):
-    with open(f"./models/{type}", "wb") as f:
+    with open(f"./models/{type}.pkl", "wb") as f:
         pickle.dump(model,f)
 
 
