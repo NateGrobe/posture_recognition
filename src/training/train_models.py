@@ -1,5 +1,6 @@
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn import accuracy_score
 from sklearn.linear_model import LogisticRegression, RidgeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import train_test_split
@@ -48,6 +49,17 @@ if __name__ == '__main__':
     models = generate_models(X_train, y_train)
 
     print("\nModel training complete!\n")
+
+    print("Generating Accuracy metrics:")
+    fit_models = {}
+    for algo, pipeline in PIPELINES.items():
+        model = pipeline.fit(X_train, y_train)
+        fit_models[algo] = model
+
+    for algo, model in fit_models.items():
+        yhat = model.predict(X_test)
+        print(algo, accuracy_score(y_test, yhat))
+
 
     print("Writing Models to pickle files")
 
