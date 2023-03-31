@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import mediapipe as mp
 from PIL import Image, ImageTk
-customtkinter.set_appearance_mode("System")
+customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("blue")
 
 
