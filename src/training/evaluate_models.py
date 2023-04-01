@@ -44,8 +44,8 @@ def evaluate_models(x, y):
     print(rf_acc)
 
     print("Accuracy of Ridge Classification:")
-    rf_acc = test_model(rf_model, x, y)
-    print(rf_acc)
+    rc_acc = test_model(rc_model, x, y)
+    print(rc_acc)
 
 if __name__ == '__main__':
     x, y = get_test_vals()
