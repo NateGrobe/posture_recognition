@@ -8,6 +8,7 @@ import time
 import csv
 import numpy as np
 import os
+import pathlib
 
 # determines the name of the folder given a file prefix
 def get_folder(img_class: str) -> str:
@@ -16,28 +17,28 @@ def get_folder(img_class: str) -> str:
     elif img_class == 'bendingdown':
         return 'BendingDown'
 
-def create_csv():
-    mp_holistic = mp.solutions.holistic
+def get_image_list(path: str) -> list[str]:
+    imgs = []
 
-    output_file = './models/coords_test.csv'
-    avg_dir = "./Average"
-    bd_dir = "./BendingDown"
+    for dirpath, _, filenames in os.walk(path):
+        for filename in filenames:
+            if filename.lower().endswith('.jpg'):
+                imgs.append(os.path.join(dirpath, filename))
+
+    return imgs
+
+def create_csv(out_path: str = './', img_list: list[str] = None):
+    mp_holistic = mp.solutions.holistic
     results = None
     first_loop = True
-
     s_count = 0
     f_count = 0
 
-    # make sure there are only jpegs being read in
-    avg_imgs = [x for x in os.listdir(avg_dir) if ".jpg" in x]
-    bd_imgs = [x for x in os.listdir(bd_dir) if ".jpg" in x]
-    img_list = avg_imgs + bd_imgs
-
     with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
-        for image_path in img_list:
+        for img_path in img_list:
 
-            img_class = image_path.split('_')[0].lower()
-            image = cv2.imread(f"./{get_folder(img_class)}/{image_path}")
+            img_class = img_path.split('\\')[-1].split('_')[0].lower() # works on windows only
+            image = cv2.imread(img_path)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
             results = holistic.process(image)
@@ -53,7 +54,7 @@ def create_csv():
                     landmarks += [f"x{i}", f"y{i}", f"z{i}", f"v{i}"]
 
                 # write to file
-                with open(output_file, mode='w', newline='') as f:
+                with open(out_path, mode='w', newline='') as f:
                     csv_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                     csv_writer.writerow(landmarks)
 
@@ -69,7 +70,7 @@ def create_csv():
                 row.insert(0, img_class)
                 
                 # Export to CSV
-                with open(output_file, mode='a', newline='') as f:
+                with open(out_path, mode='a', newline='') as f:
                     csv_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                     csv_writer.writerow(row) 
 
@@ -82,4 +83,6 @@ def create_csv():
     print(f"{f_count} failed")
 
 if __name__ == '__main__':
-    create_csv()
+    c_path = pathlib.Path().resolve()
+    img_list = get_image_list(c_path)
+    create_csv(f"{c_path}/models/coords.csv", img_list)
