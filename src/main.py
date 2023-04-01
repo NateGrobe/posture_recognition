@@ -6,7 +6,7 @@ import cv2
 import pandas as pd
 import numpy as np
 import mediapipe as mp
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageFont, ImageDraw
 customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("blue")
 
@@ -63,7 +63,7 @@ class App(customtkinter.CTk):
         # OUTPUT VIDEO
 
         self.cameraFrame = customtkinter.CTkFrame(
-            self, width=950, corner_radius=0)
+            self, width=1920, corner_radius=0)
         self.cameraFrame.grid(row=0, column=1, padx=10, pady=10)
         self.cam = customtkinter.CTkLabel(self.cameraFrame, text="")
         self.cam.grid()
@@ -72,11 +72,11 @@ class App(customtkinter.CTk):
         self.mp_drawing = mp.solutions.drawing_utils  # drawing helpers
         self.mp_holistic = mp.solutions.holistic  # Mediapipe Solutions
 
-        self.blf = open(r"training\models\rf.pkl", "rb")
+        self.blf = open("training/models/rf.pkl", "rb")
         self.rc_model = open("training/models/rc.pkl", "rb")
         self.rf_model = open("training/models/rf.pkl", "rb")
         self.pose_model = None
-        with open(r"training\models\rf.pkl", "rb") as f:
+        with open("training/models/rf.pkl", "rb") as f:
             self.pose_model = pickle.load(f)
         with open("training/models/rc.pkl", "rb") as f:
             self.rc_model = pickle.load(f)
@@ -114,6 +114,9 @@ class App(customtkinter.CTk):
     def on_stop(self):
         if self.cap.isOpened():
             self.cap.release()
+        black_img = np.zeros((720, 960, 3), dtype=np.uint8)
+        blk_ImgTks = ImageTk.PhotoImage(image=Image.fromarray(black_img))
+        self.cam.configure(image=blk_ImgTks)
 
     def change_model(self):
         if self.radio_var == 1:
@@ -136,7 +139,11 @@ class App(customtkinter.CTk):
                                                self.mp_drawing.DrawingSpec(
                                                    color=(245, 66, 230), thickness=2, circle_radius=2),
                                                )
-
+                # Initialize image variables to write text
+                font = ImageFont.truetype("Arial Unicode.ttf", 36)
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                img1 = Image.fromarray(img)
+                edit_image = ImageDraw.Draw(im=img1)
                 # Export coordinates
                 try:
                     # Extract Pose landmarks
@@ -150,33 +157,25 @@ class App(customtkinter.CTk):
                     body_language_prob = self.pose_model.predict_proba(X)[0]
                     print(body_language_class, body_language_prob)
 
-                    # Get status box
-                    cv2.rectangle(img, (0, 0), (250, 60),
-                                  (245, 117, 16), -1)
-
                     # Display Class
-                    cv2.putText(
-                        img, 'CLASS', (95, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
-                    cv2.putText(img, body_language_class.split(' ')[0]
-                                , (90, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+                    edit_image.text((155, 12), 'CLASS', ("red"), font=font)
+                    edit_image.text((150, 40), body_language_class.split(' ')[
+                                    0], ("red"), font=font)
 
                     # Display Probability
-                    cv2.putText(
-                        img, 'PROB', (15, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
-                    cv2.putText(img, str(round(body_language_prob[np.argmax(body_language_prob)], 2)), (
-                        10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+                    edit_image.text((15, 12), 'PROB', ("red"), font=font)
+                    edit_image.text((10, 40), str(round(body_language_prob[np.argmax(
+                        body_language_prob)], 2)), ("red"), font=font)
 
                 except:
                     pass
+                # Remove temp variable
+                del edit_image
 
-                # cv2.imshow('Raw Webcam Feed', img)
-                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                image1 = Image.fromarray(img)
-                ImgTks = ImageTk.PhotoImage(image=image1)
-                # self.canvas.create_image(0, 0, image=ImgTks, anchor=NW)
+                # Format into tkinter image and add to GUI
+                ImgTks = ImageTk.PhotoImage(image=img1)
                 self.cam.imgtk = ImgTks
-                self.cam.configure(image=ImgTks)
-
+                self.cam.configure(image=self.cam.imgtk)
                 self.after(1, self.main)
 
 
