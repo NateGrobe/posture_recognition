@@ -1,8 +1,5 @@
 '''
-A simple interface for taking photos of a pose.
-
-This gives the user 3 seconds to get into position. Once in position,
-60 photos will be taken and then the application will close.
+    Builds a csv file with a list of pose landmarks for each image
 '''
 
 import cv2
@@ -12,6 +9,7 @@ import csv
 import numpy as np
 import os
 
+# determines the name of the folder given a file prefix
 def get_folder(img_class: str) -> str:
     if img_class == 'average':
         return 'Average'
@@ -44,25 +42,28 @@ def create_csv():
 
             results = holistic.process(image)
 
+            # Adds the column names to the csv file
+            # Done this way because depending on the image set
+            # the number of columns is variable
             if first_loop:
+                # generate header
                 num_coords = len(results.pose_landmarks.landmark)
                 landmarks = ['class']
                 for i in range(1, num_coords + 1):
                     landmarks += [f"x{i}", f"y{i}", f"z{i}", f"v{i}"]
 
+                # write to file
                 with open(output_file, mode='w', newline='') as f:
                     csv_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                     csv_writer.writerow(landmarks)
 
                 first_loop = False
 
+            # Extract pose landmarks from images and write to csv
             try:
                 # Extract Pose landmarks
                 pose = results.pose_landmarks.landmark
-                pose_row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
-                
-                # Concatenate rows
-                row = pose_row
+                row = list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
                 
                 # Append class name 
                 row.insert(0, img_class)

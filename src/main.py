@@ -141,11 +141,9 @@ class App(customtkinter.CTk):
                 try:
                     # Extract Pose landmarks
                     pose = results.pose_landmarks.landmark
-                    pose_row = list(np.array(
+                    row = list(np.array(
                         [[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
 
-                    # Concate rows
-                    row = pose_row
                     # Make Detections
                     X = pd.DataFrame([row])
                     body_language_class = self.pose_model.predict(X)[0]
@@ -159,8 +157,8 @@ class App(customtkinter.CTk):
                     # Display Class
                     cv2.putText(
                         img, 'CLASS', (95, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
-                    cv2.putText(img, body_language_class.split(' ')[
-                                0], (90, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+                    cv2.putText(img, body_language_class.split(' ')[0]
+                                , (90, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
                     # Display Probability
                     cv2.putText(
