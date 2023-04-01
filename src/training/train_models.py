@@ -1,3 +1,8 @@
+'''
+    Imports the csv file with all of the data generated,
+    trains a series of models, and tests them to determine the effectiveness
+'''
+
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
@@ -45,11 +50,13 @@ if __name__ == '__main__':
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1234)
     print("Samples split successfully!\n")
 
+    # train the models
     print("Training models...")
     models = generate_models(X_train, y_train)
 
     print("\nModel training complete!\n")
 
+    # tests the models on the test set
     print("Generating Accuracy metrics:")
     fit_models = {}
     for algo, pipeline in PIPELINES.items():
@@ -61,8 +68,8 @@ if __name__ == '__main__':
         print(algo, "Accuracy: ", accuracy_score(y_test, yhat))
 
 
+    # writes the models to pickle files for later use
     print("Writing Models to pickle files")
-
     for key in models:
         write_model(models[key], key)
 
