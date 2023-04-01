@@ -1,6 +1,6 @@
 # Posture Recognition
 
-To run, install dependencies from requirements.txt
+Install dependencies from requirements.txt
 
 ```bash
 pip install -r requirements.txt
