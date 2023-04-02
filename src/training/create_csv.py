@@ -10,15 +10,7 @@ import numpy as np
 import os
 import pathlib
 
-# determines the name of the folder given a file prefix
-def get_folder(img_class: str) -> str:
-    if img_class == 'average':
-        return 'Average'
-    elif img_class == 'bendingdown':
-        return 'BendingDown'
-    elif img_class == 'doorbell':
-        return 'DoorBell'
-
+# generates complete paths for all jpg images in the training folder
 def get_image_list(path: str) -> list[str]:
     imgs = []
 
@@ -29,6 +21,7 @@ def get_image_list(path: str) -> list[str]:
 
     return imgs
 
+# builds a csv file of training data
 def create_csv(out_path: str = './', img_list: list[str] = None):
     mp_holistic = mp.solutions.holistic
     results = None
