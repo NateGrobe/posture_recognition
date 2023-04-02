@@ -1,2 +1,8 @@
 env/
 __pycache__/
+src/training/evaluation_data
+src/training/ArmsCrossed
+src/training/BendingDown
+src/training/Fighting
+src/training/Average
+src/training/SunsOut
