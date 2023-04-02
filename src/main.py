@@ -41,11 +41,19 @@ class App(customtkinter.CTk):
                                                           command=self.change_model, variable=self.radio_var, value=2)
         self.radiobutton_2.grid(
             row=3, column=0, padx=20, pady=10, sticky="nsew")
-        # self.radiobutton_3 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Ridge",
-        #                                                   command=self.change_model, variable=self.radio_var, value=3)
-        # self.radiobutton_4 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Random Tree",
-        #                                                   command=self.change_model, variable=self.radio_var, value=4)
+
         self.radiobutton_2.select()
+
+        self.radiobutton_3 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Logistic",
+                                                          command=self.change_model, variable=self.radio_var, value=3)
+        self.radiobutton_3.grid(
+            row=4, column=0, padx=20, pady=10, sticky="nsew")
+
+        self.radiobutton_4 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Boosted",
+                                                          command=self.change_model, variable=self.radio_var, value=4)
+        self.radiobutton_4.grid(
+            row=5, column=0, padx=20, pady=10, sticky="nsew")
+
         # START BUTTON
         self.startbtn = customtkinter.CTkButton(
             self.sidebar_frame, text="Start Monitor", command=self.handle_start_stop)
@@ -71,24 +79,34 @@ class App(customtkinter.CTk):
         # media pipe setup
         self.mp_drawing = mp.solutions.drawing_utils  # drawing helpers
         self.mp_holistic = mp.solutions.holistic  # Mediapipe Solutions
+        self.holistic = self.mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
         self.blf = open("training/models/rf.pkl", "rb")
         self.rc_model = open("training/models/rc.pkl", "rb")
         self.rf_model = open("training/models/rf.pkl", "rb")
+        self.lr_model = open("training/models/lr.pkl", "rb")
+        self.gb_model = open("training/models/gb.pkl", "rb")
+
         self.pose_model = None
+        # default model
         with open("training/models/rf.pkl", "rb") as f:
             self.pose_model = pickle.load(f)
+
+        # open all models
         with open("training/models/rc.pkl", "rb") as f:
             self.rc_model = pickle.load(f)
         with open("training/models/rf.pkl", "rb") as f:
             self.rf_model = pickle.load(f)
+        with open("training/models/lr.pkl", "rb") as f:
+            self.lr_model = pickle.load(f)
+        with open("training/models/gb.pkl", "rb") as f:
+            self.gb_model = pickle.load(f)
 
-        self.holistic = self.mp_holistic.Holistic(
-            min_detection_confidence=0.5, min_tracking_confidence=0.5)
-
+    # change appearance
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
 
+    # start stop button event handler
     def handle_start_stop(self):
         if not self.start:
             self.start = True
@@ -101,16 +119,20 @@ class App(customtkinter.CTk):
             self.stop_main()
             self.on_stop()
 
+    # starts main function
     def start_main(self):
         self.start = True
         self.main()
 
+    # stops main function  
     def stop_main(self):
         self.start = False
 
+    # starts camera
     def on_start(self):
         self.cap = cv2.VideoCapture(0)
 
+    # closes camera
     def on_stop(self):
         if self.cap.isOpened():
             self.cap.release()
@@ -118,33 +140,38 @@ class App(customtkinter.CTk):
         blk_ImgTks = ImageTk.PhotoImage(image=Image.fromarray(black_img))
         self.cam.configure(image=blk_ImgTks)
 
+    # changes model based on radio buttons
     def change_model(self):
         if self.radio_var == 1:
             self.pose_model = self.rc_model
         elif self.radio_var == 2:
             self.pose_model = self.rf_model
+        elif self.radio_var == 3:
+            self.pose_model = self.lr_model
+        elif self.radio_var == 4:
+            self.pose_model = self.gb_model
 
+    # main loop
     def main(self):
         if self.start:
             results = None
 
+            # read in image
             ret, img = self.cap.read()
             if ret:
                 results = self.holistic.process(img)
 
-                # 4. Pose Detections
+                # Pose Detections
                 self.mp_drawing.draw_landmarks(img, results.pose_landmarks, self.mp_holistic.POSE_CONNECTIONS,
-                                               self.mp_drawing.DrawingSpec(
-                                                   color=(245, 117, 66), thickness=2, circle_radius=4),
-                                               self.mp_drawing.DrawingSpec(
-                                                   color=(245, 66, 230), thickness=2, circle_radius=2),
-                                               )
+                                               self.mp_drawing.DrawingSpec(color=(245, 117, 66), thickness=2, circle_radius=4),
+                                               self.mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=2, circle_radius=2))
+
                 # Initialize image variables to write text
                 font = ImageFont.truetype("Arial Unicode.ttf", 36)
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
                 img1 = Image.fromarray(img)
                 edit_image = ImageDraw.Draw(im=img1)
-                # Export coordinates
+
                 try:
                     # Extract Pose landmarks
                     pose = results.pose_landmarks.landmark
