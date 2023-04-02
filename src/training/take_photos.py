@@ -1,8 +1,5 @@
 '''
 A simple interface for taking photos of a pose.
-
-This gives the user 3 seconds to get into position. Once in position,
-60 photos will be taken and then the application will close.
 '''
 
 import cv2
