@@ -11,12 +11,12 @@ import pandas as pd
 import pathlib
 from create_csv import create_csv, get_image_list
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 # generates test values from photos
 def get_test_vals():
     c_path = pathlib.Path().resolve()
-    img_list = get_image_list(c_path)
+    img_list = get_image_list(f"{c_path}/evaluation_data")
     # create_csv(f"{c_path}/evaluation_data/coords.csv", img_list)
 
     df = pd.read_csv('./evaluation_data/coords.csv')
@@ -30,9 +30,21 @@ def get_test_vals():
     return X_test, y_test
 
 # tests the predict model for accuracy
-def test_model(model, x, y):
+def test_accuracy(model, x, y):
     yhat = model.predict(x)
     return accuracy_score(y, yhat)
+
+def test_precision(model, x, y):
+    yhat = model.predict(x)
+    return precision_score(y, yhat, average='micro')
+
+def test_recall(model, x, y):
+    yhat = model.predict(x)
+    return recall_score(y, yhat, average='micro')
+
+def test_f1(model, x, y):
+    yhat = model.predict(x)
+    return f1_score(y, yhat, average='micro')
 
 # prints results
 def evaluate_models(x, y):
@@ -50,21 +62,37 @@ def evaluate_models(x, y):
         lr_model = pickle.load(f)
 
 
-    print("Accuracy of Random Forest:")
-    rf_acc = test_model(rf_model, x, y)
-    print(rf_acc)
+    print("Accuracy:")
+    rf_acc = test_accuracy(rf_model, x, y)
+    print(f"Random forest: {rf_acc}")
 
-    print("Accuracy of Ridge Classification:")
-    rc_acc = test_model(rc_model, x, y)
-    print(rc_acc)
+    rc_acc = test_accuracy(rc_model, x, y)
+    print(f"Ridge Classification: {rc_acc}")
 
-    print("Accuracy of Gradient Boost:")
-    gb_acc = test_model(gb_model, x, y)
-    print(gb_acc)
+    # gb_acc = test_accuracy(gb_model, x, y)
+    # print(f"Gradient Boosting: {gb_acc}")
 
-    print("Accuracy of Logistic Regression:")
-    lr_acc = test_model(lr_model, x, y)
-    print(lr_acc)
+    lr_acc = test_accuracy(lr_model, x, y)
+    print(f"Logistic Regression: {lr_acc}")
+
+    print("\nPrecision")
+    print(f"Random Forest: {test_precision(rf_model, x, y)}")
+    print(f"Ridge Classification: {test_precision(rc_model, x, y)}")
+    # print(f"Gradient Boosting: {test_precision(gb_model, x, y)}")
+    print(f"Logistic Regression: {test_precision(lr_model, x, y)}")
+
+    print("\nRecall:")
+    print(f"Random Forest: {test_recall(rf_model, x, y)}")
+    print(f"Ridge Classification: {test_recall(rc_model, x, y)}")
+    # print(f"Gradient Boosting: {test_recall(gb_model, x, y)}")
+    print(f"Logistic Regression: {test_recall(lr_model, x, y)}")
+
+    print("\nF1:")
+    print(f"Random Forest: {test_f1(rf_model, x, y)}")
+    print(f"Ridge Classification: {test_f1(rc_model, x, y)}")
+    # print(f"Gradient Boosting: {test_f1(gb_model, x, y)}")
+    print(f"Logistic Regression: {test_f1(lr_model, x, y)}")
+
 
 if __name__ == '__main__':
     x, y = get_test_vals()
