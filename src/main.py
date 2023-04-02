@@ -32,27 +32,31 @@ class App(customtkinter.CTk):
         self.logo_label = customtkinter.CTkLabel(
             self.sidebar_frame, text="Options", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+
+        self.radiobutton_frame = customtkinter.CTkFrame(
+            self.sidebar_frame, width=140, corner_radius=0)
+        self.radiobutton_frame.grid(row=2, column=0, rowspan=4, sticky="nsew")
         self.radio_var = tkinter.IntVar()
-        self.radiobutton_1 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Ridge",
+        self.radiobutton_1 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, text="Ridge",
                                                           command=self.change_model, variable=self.radio_var, value=1)
         self.radiobutton_1.grid(
-            row=2, column=0, padx=20, pady=10, sticky="nsew")
-        self.radiobutton_2 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Random Forest",
+            row=0, column=0, padx=20, pady=10, sticky="nsew")
+        self.radiobutton_2 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, text="Random Forest",
                                                           command=self.change_model, variable=self.radio_var, value=2)
         self.radiobutton_2.grid(
-            row=3, column=0, padx=20, pady=10, sticky="nsew")
+            row=1, column=0, padx=20, pady=10, sticky="nsew")
 
         self.radiobutton_2.select()
 
-        self.radiobutton_3 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Logistic",
+        self.radiobutton_3 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, text="Logistic",
                                                           command=self.change_model, variable=self.radio_var, value=3)
         self.radiobutton_3.grid(
-            row=4, column=0, padx=20, pady=10, sticky="nsew")
+            row=2, column=0, padx=20, pady=10, sticky="nsew")
 
-        self.radiobutton_4 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Boosted",
+        self.radiobutton_4 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, text="Boosted",
                                                           command=self.change_model, variable=self.radio_var, value=4)
         self.radiobutton_4.grid(
-            row=5, column=0, padx=20, pady=10, sticky="nsew")
+            row=3, column=0, padx=20, pady=10, sticky="nsew")
 
         # START BUTTON
         self.startbtn = customtkinter.CTkButton(
@@ -62,11 +66,11 @@ class App(customtkinter.CTk):
         # LIGHT AND DARK MODE ETC
         self.appearance_mode_label = customtkinter.CTkLabel(
             self.sidebar_frame, text="Appearance Mode:", anchor="w")
-        self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
+        self.appearance_mode_label.grid(row=6, column=0, padx=20, pady=(10, 0))
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark", "System"],
                                                                        command=self.change_appearance_mode_event)
         self.appearance_mode_optionemenu.grid(
-            row=6, column=0, padx=20, pady=(10, 10))
+            row=10, column=0, padx=20, pady=(10, 10))
 
         # OUTPUT VIDEO
 
@@ -79,7 +83,8 @@ class App(customtkinter.CTk):
         # media pipe setup
         self.mp_drawing = mp.solutions.drawing_utils  # drawing helpers
         self.mp_holistic = mp.solutions.holistic  # Mediapipe Solutions
-        self.holistic = self.mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5)
+        self.holistic = self.mp_holistic.Holistic(
+            min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
         self.blf = open("training/models/rf.pkl", "rb")
         self.rc_model = open("training/models/rc.pkl", "rb")
@@ -124,7 +129,7 @@ class App(customtkinter.CTk):
         self.start = True
         self.main()
 
-    # stops main function  
+    # stops main function
     def stop_main(self):
         self.start = False
 
@@ -163,7 +168,8 @@ class App(customtkinter.CTk):
 
                 # Pose Detections
                 self.mp_drawing.draw_landmarks(img, results.pose_landmarks, self.mp_holistic.POSE_CONNECTIONS,
-                                               self.mp_drawing.DrawingSpec(color=(245, 117, 66), thickness=2, circle_radius=4),
+                                               self.mp_drawing.DrawingSpec(
+                                                   color=(245, 117, 66), thickness=2, circle_radius=4),
                                                self.mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=2, circle_radius=2))
 
                 # Initialize image variables to write text
