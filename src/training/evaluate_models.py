@@ -30,19 +30,19 @@ def get_test_vals():
     return X_test, y_test
 
 # tests the predict model for accuracy
-def test_accuracy(model, x, y):
+def test_accuracy(model, x, y) -> float:
     yhat = model.predict(x)
     return accuracy_score(y, yhat)
 
-def test_precision(model, x, y):
+def test_precision(model, x, y) -> float:
     yhat = model.predict(x)
     return precision_score(y, yhat, average='micro')
 
-def test_recall(model, x, y):
+def test_recall(model, x, y) -> float:
     yhat = model.predict(x)
     return recall_score(y, yhat, average='micro')
 
-def test_f1(model, x, y):
+def test_f1(model, x, y) -> float:
     yhat = model.predict(x)
     return f1_score(y, yhat, average='micro')
 
@@ -69,8 +69,8 @@ def evaluate_models(x, y):
     rc_acc = test_accuracy(rc_model, x, y)
     print(f"Ridge Classification: {rc_acc}")
 
-    # gb_acc = test_accuracy(gb_model, x, y)
-    # print(f"Gradient Boosting: {gb_acc}")
+    gb_acc = test_accuracy(gb_model, x, y)
+    print(f"Gradient Boosting: {gb_acc}")
 
     lr_acc = test_accuracy(lr_model, x, y)
     print(f"Logistic Regression: {lr_acc}")
@@ -78,19 +78,19 @@ def evaluate_models(x, y):
     print("\nPrecision")
     print(f"Random Forest: {test_precision(rf_model, x, y)}")
     print(f"Ridge Classification: {test_precision(rc_model, x, y)}")
-    # print(f"Gradient Boosting: {test_precision(gb_model, x, y)}")
+    print(f"Gradient Boosting: {test_precision(gb_model, x, y)}")
     print(f"Logistic Regression: {test_precision(lr_model, x, y)}")
 
     print("\nRecall:")
     print(f"Random Forest: {test_recall(rf_model, x, y)}")
     print(f"Ridge Classification: {test_recall(rc_model, x, y)}")
-    # print(f"Gradient Boosting: {test_recall(gb_model, x, y)}")
+    print(f"Gradient Boosting: {test_recall(gb_model, x, y)}")
     print(f"Logistic Regression: {test_recall(lr_model, x, y)}")
 
     print("\nF1:")
     print(f"Random Forest: {test_f1(rf_model, x, y)}")
     print(f"Ridge Classification: {test_f1(rc_model, x, y)}")
-    # print(f"Gradient Boosting: {test_f1(gb_model, x, y)}")
+    print(f"Gradient Boosting: {test_f1(gb_model, x, y)}")
     print(f"Logistic Regression: {test_f1(lr_model, x, y)}")
 
 
