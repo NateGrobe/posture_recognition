@@ -173,7 +173,7 @@ class App(customtkinter.CTk):
                                                self.mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=2, circle_radius=2))
 
                 # Initialize image variables to write text
-                font = ImageFont.truetype("Arial Unicode.ttf", 36)
+                font = ImageFont.truetype("Arial_Unicode.ttf", 36)
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
                 img1 = Image.fromarray(img)
                 edit_image = ImageDraw.Draw(im=img1)
