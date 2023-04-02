@@ -13,6 +13,7 @@ from create_csv import create_csv, get_image_list
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
+# generates test values from photos
 def get_test_vals():
     c_path = pathlib.Path().resolve()
     img_list = get_image_list(c_path)
@@ -23,14 +24,17 @@ def get_test_vals():
     X = df.drop('class', axis=1)
     y = df['class']
 
+    # use most of the data as test data
     _, X_test, _, y_test = train_test_split(X, y, test_size=0.8, random_state=42)
 
     return X_test, y_test
 
+# tests the predict model for accuracy
 def test_model(model, x, y):
     yhat = model.predict(x)
     return accuracy_score(y, yhat)
 
+# prints results
 def evaluate_models(x, y):
     rf_model, rc_model, gb_model, lr_model = None, None, None, None
     with open('./models/rf.pkl', "rb") as f:
