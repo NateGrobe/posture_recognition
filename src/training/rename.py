@@ -1,3 +1,7 @@
+'''
+    File renaming script.
+'''
+
 import os
 import pathlib
 
