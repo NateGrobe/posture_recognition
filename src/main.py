@@ -66,11 +66,11 @@ class App(customtkinter.CTk):
         # LIGHT AND DARK MODE ETC
         self.appearance_mode_label = customtkinter.CTkLabel(
             self.sidebar_frame, text="Appearance Mode:", anchor="w")
-        self.appearance_mode_label.grid(row=6, column=0, padx=20, pady=(10, 0))
+        self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark", "System"],
                                                                        command=self.change_appearance_mode_event)
         self.appearance_mode_optionemenu.grid(
-            row=10, column=0, padx=20, pady=(10, 10))
+            row=6, column=0, padx=20, pady=(10, 10))
 
         # OUTPUT VIDEO
 
