@@ -16,7 +16,7 @@ from sklearn.metrics import accuracy_score
 def get_test_vals():
     c_path = pathlib.Path().resolve()
     img_list = get_image_list(c_path)
-    create_csv(f"{c_path}/evaluation_data/coords.csv", img_list)
+    # create_csv(f"{c_path}/evaluation_data/coords.csv", img_list)
 
     df = pd.read_csv('./evaluation_data/coords.csv')
 
@@ -32,12 +32,19 @@ def test_model(model, x, y):
     return accuracy_score(y, yhat)
 
 def evaluate_models(x, y):
-    rf_model, rc_model = None, None
-    with open('./models/rf.pkl') as f:
+    rf_model, rc_model, gb_model, lr_model = None, None, None, None
+    with open('./models/rf.pkl', "rb") as f:
         rf_model = pickle.load(f)
 
-    with open('./models/rc.pkl') as f:
+    with open('./models/gb.pkl', "rb") as f:
+        gb_model = pickle.load(f)
+
+    with open('./models/rc.pkl', "rb") as f:
         rc_model = pickle.load(f)
+
+    with open('./models/lr.pkl', "rb") as f:
+        lr_model = pickle.load(f)
+
 
     print("Accuracy of Random Forest:")
     rf_acc = test_model(rf_model, x, y)
@@ -46,6 +53,14 @@ def evaluate_models(x, y):
     print("Accuracy of Ridge Classification:")
     rc_acc = test_model(rc_model, x, y)
     print(rc_acc)
+
+    print("Accuracy of Gradient Boost:")
+    gb_acc = test_model(gb_model, x, y)
+    print(gb_acc)
+
+    print("Accuracy of Logistic Regression:")
+    lr_acc = test_model(lr_model, x, y)
+    print(lr_acc)
 
 if __name__ == '__main__':
     x, y = get_test_vals()

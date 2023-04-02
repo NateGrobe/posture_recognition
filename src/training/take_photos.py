@@ -8,7 +8,7 @@ import time
 import os
 
 if __name__ == '__main__':
-    title = "Average"
+    title = "SunsOut"
     
     mp_drawing = mp.solutions.drawing_utils
     mp_holistic = mp.solutions.holistic
@@ -22,6 +22,7 @@ if __name__ == '__main__':
     with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
         start_time = time.time()
 
+        # counter = len(os.listdir(f"./evaluation_data/{title}"))
         counter = len(os.listdir(title))
 
         while cap.isOpened():
@@ -48,6 +49,7 @@ if __name__ == '__main__':
                 except:
                     pass
 
+                # path = f"./evaluation_data/{title}/{title}_{counter}.jpg"
                 path = f"./{title}/{title}_{counter}.jpg"
                 cv2.imwrite(path, image)
 

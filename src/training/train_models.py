@@ -18,9 +18,9 @@ from create_csv import get_image_list
 
 # potential models to be trained and evaluated
 PIPELINES = {
-    # 'gb': make_pipeline(StandardScaler(), GradientBoostingClassifier()),
+    'gb': make_pipeline(StandardScaler(), GradientBoostingClassifier()),
     'rc': make_pipeline(StandardScaler(), RidgeClassifier()),
-    # 'lr': make_pipeline(StandardScaler(), LogisticRegression()),
+    'lr': make_pipeline(StandardScaler(), LogisticRegression()),
     'rf': make_pipeline(StandardScaler(), RandomForestClassifier()),
 }
 
@@ -40,9 +40,9 @@ def write_model(model, type):
 
 
 if __name__ == '__main__':
-    c_path = pathlib.Path().resolve()
-    img_list = get_image_list(c_path)
-    create_csv(f"{c_path}/models/coords.csv", img_list)
+    # c_path = pathlib.Path().resolve()
+    # img_list = get_image_list(c_path)
+    # create_csv(f"{c_path}/models/coords.csv", img_list)
 
     # read in data
     df = pd.read_csv('./models/coords.csv')

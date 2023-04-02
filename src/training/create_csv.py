@@ -16,6 +16,8 @@ def get_folder(img_class: str) -> str:
         return 'Average'
     elif img_class == 'bendingdown':
         return 'BendingDown'
+    elif img_class == 'doorbell':
+        return 'DoorBell'
 
 def get_image_list(path: str) -> list[str]:
     imgs = []
@@ -34,6 +36,7 @@ def create_csv(out_path: str = './', img_list: list[str] = None):
     s_count = 0
     f_count = 0
 
+    print("Writing to CSV...")
     with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
         for img_path in img_list:
 
@@ -81,6 +84,8 @@ def create_csv(out_path: str = './', img_list: list[str] = None):
 
     print(f"{s_count} success")
     print(f"{f_count} failed")
+
+    print("Writing to CSV complete!")
 
 if __name__ == '__main__':
     c_path = pathlib.Path().resolve()
