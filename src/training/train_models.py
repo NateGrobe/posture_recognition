@@ -40,9 +40,11 @@ def write_model(model, type):
 
 
 if __name__ == '__main__':
-    # c_path = pathlib.Path().resolve()
-    # img_list = get_image_list(c_path)
-    # create_csv(f"{c_path}/models/coords.csv", img_list)
+    c_path = pathlib.Path().resolve()
+    img_list = get_image_list(c_path)
+    img_list = [x for x in img_list if "evaluation_data" not in x] # comment out this line if evaluation data is to be included
+
+    create_csv(f"{c_path}/models/coords.csv", img_list)
 
     # read in data
     df = pd.read_csv('./models/coords.csv')
