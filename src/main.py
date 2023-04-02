@@ -45,7 +45,7 @@ class App(customtkinter.CTk):
         #                                                   command=self.change_model, variable=self.radio_var, value=3)
         # self.radiobutton_4 = customtkinter.CTkRadioButton(master=self.sidebar_frame, text="Random Tree",
         #                                                   command=self.change_model, variable=self.radio_var, value=4)
-        self.radiobutton_1.select()
+        self.radiobutton_2.select()
         # START BUTTON
         self.startbtn = customtkinter.CTkButton(
             self.sidebar_frame, text="Start Monitor", command=self.handle_start_stop)
